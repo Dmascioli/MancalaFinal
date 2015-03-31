@@ -1,259 +1,137 @@
 
-import java.util.*;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-public class Driver implements ActionListener{
-	JFrame stoneFrame = new JFrame();
-	JFrame mainFrame = new JFrame("Mancala");
-	JPanel mainPanel = new JPanel();
-	JButton[] pits = new JButton[14];
-	GridBagConstraints c = new GridBagConstraints();
+public class Board {
+	private int[] pits = new int[14];
+	private int turn = 0, index;
 	
-	JPanel stonePanel = new JPanel(new GridLayout(2,1));
-	JButton okay = new JButton();
-	JTextField stoneNum = new JTextField("",5);
-	int numStone;
-	JLabel p1 = new JLabel("Player 1"), p2 = new JLabel("Player 2");
-	JLabel enterStoneNum = new JLabel("ENTER NUMBER OF STONES: ");
-	FlowLayout Layout = new FlowLayout();
-	
-	JFrame turnFrame = new JFrame("Turn");
-	JLabel placeLabel = new JLabel("Turn:  ");
-	JLabel playerTurn = new JLabel("Player 1");
-
-	Board mancala;
-	
-	public static void main(String[] args) {
-		
-		new Driver();
-		
-		
-	//	Board mancala = new Board(3);
-		
-	//	mancala.displayBoard();
-	//	mancala.move(9);
-	//	mancala.displayBoard();
-	//	mancala.move(7);
-	//	mancala.displayBoard();
-	//	System.out.println(mancala.getStones(3));
-	}
-	public Driver()
+	public Board()
 	{
-		turnFrame.setSize(200,200);
-		
-		//stone frame
-		stonePanel.setLayout(Layout);
-		stoneFrame.setSize(300, 300);
-		stoneNum.addActionListener(this);
-		okay.setText("             START GAME             ");
-    	Font font3 = new Font("Impact", Font.BOLD, 18);
-    	okay.setFont(font3);
-		stoneNum.setSize(50, 50);
-		okay.setSize(50,50);
-		stonePanel.add(enterStoneNum);
-		stonePanel.add(stoneNum);
-		stonePanel.add(okay);
-		stoneFrame.add(stonePanel);
-		okay.addActionListener(this);
-
-		
-		mainFrame.setSize(500,500);
-		mainPanel.setLayout(new GridBagLayout());
-		
-		//p1 label
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 8;
-		c.ipady = 80;
-		p1.setForeground(Color.red);
-		mainPanel.add(p1,c);
-		
-		//p1 score pit
-		c.gridwidth= 1;
-		c.fill = GridBagConstraints.VERTICAL;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridheight = 2;
-		c.ipady = 80;
-		c.ipadx = 20;
-
-	    c.fill = GridBagConstraints.VERTICAL;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridheight = 2;
-		
-		//initialize buttons
-		for(int a = 0; a < 14; a++)
+		for(int a = 0; a < pits.length; a++)
 		{
-			pits[a] = new JButton("");
-			if(a <13 && a!=6)
-			{
-				pits[a].addActionListener(this);
-			}
-		}
-		//add p1 score pit
-		pits[13].setBackground(Color.red);
-		pits[13].setForeground(Color.white);
-		mainPanel.add(pits[13], c);
-		
-		//add buttons
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridheight = 1;
-		c.ipady = 40;
-		
-		for(int i = 0; i < 6; i++)
-		{
-			pits[i].setBackground(Color.white);
-			pits[i].setForeground(Color.red);
-			c.gridx = i+1;
-			c.gridy = 1;
-			mainPanel.add(pits[i],c);
+			pits[a] = 3;
+			pits[6] = 0;
+			pits[13] = 0;
 		}
 		
-		c.gridx = 0;
-		c.gridy = 2;
-		c.gridheight = 1;
-		for(int i = 7; i < 13; i++)
-		{
-			pits[i].setBackground(Color.white);
-			pits[i].setForeground(Color.blue);
-			c.gridx = i-6;
-			c.gridy = 2;
-			mainPanel.add(pits[i],c);
-		}
-		//add p2 score pit
-		c.gridx = 7;
-		c.gridy = 1;
-		c.gridheight = 2;
-		c.ipady = 80;
-		pits[6].setBackground(Color.blue);
-		pits[6].setForeground(Color.white);
-		mainPanel.add(pits[6], c);
-		
-		//p2 label
-		c.gridx= 0;
-		c.gridy = 3;
-		c.gridwidth = 8;
-		c.gridheight = 1;
-		c.ipady = 80;
-		p2.setForeground(Color.blue);
-		mainPanel.add(p2, c);
-		
-		
-		mainFrame.add(mainPanel);
-		turnFrame.add(playerTurn);
-		
-		stoneFrame.setLocationRelativeTo(null);
-	   	stoneFrame.setVisible(true);
-	   	stoneFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	public void actionPerformed(ActionEvent e)
+	public Board(int numStones)
 	{
-		if(e.getSource() == stoneNum)
-    	{
-    		numStone = Integer.parseInt(stoneNum.getText());
-    	}
-		
-		if(e.getSource() == okay)
+		for(int a=0; a < pits.length; a++)
 		{
-			stoneNum.requestFocus();
-			numStone = Integer.parseInt(stoneNum.getText());
-			for(int i = 0; i < 6; i++)
-			{
-				pits[i].setText(""+numStone);
-			}
-			for(int j = 7; j < 13; j++)
-			{
-				pits[j].setText(""+numStone);
-			}
-			mancala = new Board(numStone);
-			mancala.displayBoard();
-			
-			pits[6].setText("0");
-			pits[13].setText("0");
-			stoneFrame.setVisible(false);
-			stoneFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
-			mainFrame.setVisible(true);
-			mainFrame.setLocationRelativeTo(null);
-			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
-			
-			turnFrame.setVisible(true);
-			turnFrame.setLocation(1250,300);
-			turnFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			mainFrame.requestFocus();
+			pits[a] = numStones;
+			pits[6] = 0;
+			pits[13] = 0;
 		}
+	}
+	
+	public void move(int pit)
+	{
+		int pile = removeStones(pit);
+	//	System.out.println(pile);
+		index = pit+1;
+		
+		while(pile > 0)
+		{
+			
+			if(((index%14) == 6 && turn%2 == 0))
+			{
+				index++;
+				
+			}
+			else if(((index%14) == 13 && turn%2 == 1))
+			{
+				index++;
+			}
+			else
+			{
+				pits[index%14]++;
+				pile--;
+				index++;
+			}
+			
+			
+			
+		}
+		turn++;
+		System.out.println(index);
+		if(!checkTurnAgain(index))
+		{
+			rake();
+		}
+		
+	}
+	
+	public int removeStones(int pit)
+	{
+		int removed = pits[pit];
+		pits[pit] = 0;
+		
+		return removed;
+	}
+	
+	public boolean checkTurnAgain(int index)
+	{
+		if(index%14 == 7 && turn%2 == 0)
+		{
+			turn--;
+			return true;
+		}
+		if(index%14 == 0 && turn%2 == 1)
+		{
+			turn--;
+			return true;
+		}
+		return false;
+	}
+	
+	public void rake()
+	{
+		if(pits[(index-1)%14] == 1 && turn%2 == 1 && pits[12-((index-1)%14)] != 0)
+		{
+			pits[13] += (pits[12-((index-1)%14)]) +1;
+			pits[(index-1)%14] = 0;
+			pits[12 - ((index-1)%14)] = 0;
+			
+		}
+		if(pits[(index-1) %14] == 1 && turn%2 == 0 && pits[12-((index-1)%14)] != 0)
+		{
+			pits[6] += (pits[12 - ((index-1)%14)]) +1;
+			pits[(index-1)%14] = 0;
+			pits[12 - ((index-1)%14)] = 0;
+		}
+	}
+	
+	public void displayBoard()
+	{
+		for(int a = 12; a > 6; a--)
+		{
+			System.out.print(getStones(a)+" ");
+		}
+		System.out.println("     Player 1 Score: "+getStones(13));
 		for(int a = 0; a < 6; a++)
 		{
-			if(e.getSource() == pits[a] && mancala.getTurn() %2 == 0)
-			{
-				
-				mancala.move(12-a);
-				pits[a].setText(""+mancala.getStones(12-a));
-				
-				pits[6].setText(""+mancala.getStones(6));
-				pits[13].setText(""+mancala.getStones(13));
-				
-				playerTurn.setText("Player "+(mancala.getTurn()%2 +1));
-				refreshButtons();
-				
-				System.out.println(a);
-				
-
-			}
+			System.out.print(getStones(a)+" ");
 		}
-		
-		for(int a = 7; a <13; a++)
-		{
-			if(e.getSource() == pits[a] && mancala.getTurn() %2 == 1)
-			{
-				
-				mancala.move(a-7);
-				pits[a].setText(""+mancala.getStones(a-7));
-				
-				pits[6].setText(""+mancala.getStones(6));
-				pits[13].setText(""+mancala.getStones(13));
-				
-				playerTurn.setText("Player " +(mancala.getTurn()%2 +1));
-				refreshButtons();
-				
-				System.out.println(a);
-				
-
-			}
-		}
+		System.out.println("     Player 2 Score: "+getStones(6));
 		
 		
-
+		System.out.println("Turn: Player "+(turn%2 +1));
+		System.out.println();
 	}
-	public void refreshButtons()
+	
+	public int getTurn() {
+		return turn;
+	}
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public int getStones(int pit)
 	{
-		for(int a = 0; a < 6; a++)
-		{
-			pits[a].setText(""+mancala.getStones(12-a));
-		}
-		for(int a = 7; a < 13; a++)
-		{
-			pits[a].setText(""+mancala.getStones(a-7));
-		}
-		
-		if(mancala.getStones(6) >= numStone * 6 +1)
-		{
-			playerTurn.setText("Player 2 wins!");
-			System.out.println("Player 2");
-		}
-		if(mancala.getStones(13) >= numStone *6 +1)
-		{
-			playerTurn.setText("Player 1 wins!");
-			System.out.println("Player 1");
-		}
+		return pits[pit];
 	}
-
-
 }
